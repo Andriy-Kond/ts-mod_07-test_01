@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import AddTodoOnChange from "./components/AddTodoOnChange";
+import AddTodoRef from "./components/AddTodoRef";
+import TodoList from "./components/TodoList";
+import { IItem } from "./types/todo";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: React.FC = () => {
+	const [todos, setTodos] = useState<IItem[]>([]);
+
+	// обробники
+	function todoAddHandler(todo: IItem) {
+		setTodos((prevTodos) => {
+			return [
+				...prevTodos,
+				{
+					id: Math.random().toString(),
+					title: todo.title,
+				},
+			];
+		});
+	}
+
+	function todoRemoveHandler(id: string): void {
+		setTodos((prevTodos) => {
+			return prevTodos.filter((item) => {
+				return item.id !== id;
+			});
+		});
+	}
+
+	return (
+		<div className="App">
+			<AddTodoOnChange onAddTodo={todoAddHandler} />
+			<AddTodoRef />
+			<TodoList todos={todos} onRemoveTodo={todoRemoveHandler} />
+		</div>
+	);
+};
 
 export default App;
